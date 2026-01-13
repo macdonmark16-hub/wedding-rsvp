@@ -25,7 +25,6 @@ app.post('/rsvp', upload.none(), (req, res) => {
 
     const { name, email, contact, guests, attendance, Message } = req.body;
     if (!name || !email || !contact || !guests || !attendance) {
-        console.log('Validation failed: Missing fields');
         return res.status(400).send('Error: All required fields must be filled.');
 }
     try {
@@ -51,5 +50,14 @@ app.post('/rsvp', upload.none(), (req, res) => {
         res.status(500).send('Error: Could not save RSVP. Please try again.');
     }
 });
+// ... your other routes (e.g., app.post('/rsvp', ...))
 
-app.listen(3000, () => console.log('Server running on http://localhost:3000'));
+app.get('/download', (req, res) => {
+    if (fs.existsSync(excelFile)) {
+        res.download(excelFile);
+    } else {
+        res.send('No RSVP data yet!');
+    }
+});
+
+app.listen(process.env.PORT || 3000, () => console.log('Server running'));
